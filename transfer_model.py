@@ -16,10 +16,6 @@ num_classes = 2  # Two classes: pneumonia and healthy
 in_features = base_model.fc.in_features
 base_model.fc = nn.Linear(in_features, num_classes)
 
-# Freeze the pre-trained layers (optional)
-for param in base_model.parameters():
-    param.requires_grad = False
-
 # Define data transformations (resize, normalize, augment, etc.)
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -42,10 +38,10 @@ base_model = base_model.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(base_model.fc.parameters(), lr=0.001)
 
-# Training loop
-num_epochs = 10
+# Training loop (frozen training)
+num_epochs_frozen = 5  # Change this as needed
 
-for epoch in range(num_epochs):
+for epoch in range(num_epochs_frozen):
     base_model.train()
     running_loss = 0.0
 
@@ -58,15 +54,18 @@ for epoch in range(num_epochs):
         optimizer.step()
         running_loss += loss.item()
 
-    print(f"Epoch {epoch+1}/{num_epochs}, Loss: {running_loss/len(train_loader)}")
+    print(f"Epoch {epoch+1}/{num_epochs_frozen}, Loss: {running_loss/len(train_loader)}")
 
-# Fine-tuning (optional)
+# Unfreeze the pre-trained layers for fine-tuning
 for param in base_model.parameters():
     param.requires_grad = True
 
+# Fine-tuning loop
+num_epochs_fine_tuning = 5  # Change this as needed
+
 fine_tune_optimizer = optim.SGD(base_model.parameters(), lr=0.0001, momentum=0.9)
 
-for epoch in range(num_epochs):
+for epoch in range(num_epochs_fine_tuning):
     base_model.train()
     running_loss = 0.0
 
@@ -79,7 +78,7 @@ for epoch in range(num_epochs):
         fine_tune_optimizer.step()
         running_loss += loss.item()
 
-    print(f"Epoch {epoch+1}/{num_epochs}, Loss: {running_loss/len(train_loader)}")
+    print(f"Epoch {epoch+1}/{num_epochs_fine_tuning}, Loss: {running_loss/len(train_loader)}")
 
 # Evaluation on the test set
 base_model.eval()
