@@ -26,6 +26,13 @@ class MedicalReportGenerator:
         ])
         return transform(image).unsqueeze(0)  # Add a batch dimension
 
+    def make_pneumonia_prediction(self, input_image):
+        with torch.no_grad():
+            output = self.pneumonia_model(input_image)
+        probabilities = nn.functional.softmax(output, dim=1)
+        predicted_class = torch.argmax(probabilities, dim=1)
+        return "Pneumonia Positive" if predicted_class.item() == 1 else "Pneumonia Negative"
+
     def generate_medical_report(self, image_url, patient_info):
         try:
             # Load and preprocess the chest X-ray image
@@ -33,12 +40,8 @@ class MedicalReportGenerator:
             image = Image.open(BytesIO(response.content))
             input_image = self.preprocess_image(image)
 
-            # Make a Pneumonia Prediction using the trained model
-            with torch.no_grad():
-                output = self.pneumonia_model(input_image)
-            probabilities = nn.functional.softmax(output, dim=1)
-            predicted_class = torch.argmax(probabilities, dim=1)
-            pneumonia_prediction = "Pneumonia Positive" if predicted_class.item() == 1 else "Pneumonia Negative"
+            # Make a Pneumonia Prediction
+            pneumonia_prediction = self.make_pneumonia_prediction(input_image)
 
             # Formulate Input Prompt for GPT-3
             input_prompt = (
