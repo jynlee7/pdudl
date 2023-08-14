@@ -19,20 +19,22 @@ pneumonia_model.eval()
 api_key = "YOUR_GPT_3_API_KEY"
 openai.api_key = api_key
 
+# Define a function to preprocess the image
+def preprocess_image(image):
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5,), (0.5,))
+    ])
+    return transform(image).unsqueeze(0)  # Add a batch dimension
+
 # Load and preprocess the chest X-ray image
 image_url = "URL_TO_YOUR_CHEST_XRAY_IMAGE"
 response = requests.get(image_url)
 image = Image.open(BytesIO(response.content))
-# Preprocess the image (e.g., resize, normalize)
+input_image = preprocess_image(image)
 
 # Make a Pneumonia Prediction using the trained model
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
-])
-
-input_image = transform(image).unsqueeze(0)  # Add a batch dimension
 with torch.no_grad():
     output = pneumonia_model(input_image)
 probabilities = nn.functional.softmax(output, dim=1)
@@ -48,7 +50,11 @@ patient_info = {
 }
 
 # Formulate Input Prompt for GPT-3
-input_prompt = f"Patient: A {patient_info['age']}-year-old {patient_info['gender']} with a chest X-ray showing {pneumonia_prediction}. Symptoms: {patient_info['symptoms']}. Medical History: {patient_info['medical_history']}.\nDiagnosis: Please provide a comprehensive medical report based on the information provided."
+input_prompt = (
+    f"Patient: A {patient_info['age']}-year-old {patient_info['gender']} with a chest X-ray showing {pneumonia_prediction}. "
+    f"Symptoms: {patient_info['symptoms']}. Medical History: {patient_info['medical_history']}.\n"
+    "Diagnosis: Please provide a comprehensive medical report based on the information provided."
+)
 
 # Request Medical Report from GPT-3
 response = openai.Completion.create(
