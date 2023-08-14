@@ -39,8 +39,16 @@ probabilities = nn.functional.softmax(output, dim=1)
 predicted_class = torch.argmax(probabilities, dim=1)
 pneumonia_prediction = "Pneumonia Positive" if predicted_class.item() == 1 else "Pneumonia Negative"
 
+# Additional patient information
+patient_info = {
+    "age": "35",
+    "gender": "male",
+    "symptoms": "cough, fever",
+    "medical_history": "no significant medical history"
+}
+
 # Formulate Input Prompt for GPT-3
-input_prompt = f"Patient: A 35-year-old male with a chest X-ray showing {pneumonia_prediction}. Image: {image}\nMedical History: Describe any symptoms, medical history, and other relevant details.\nDiagnosis: Please provide a medical report based on the information provided."
+input_prompt = f"Patient: A {patient_info['age']}-year-old {patient_info['gender']} with a chest X-ray showing {pneumonia_prediction}. Symptoms: {patient_info['symptoms']}. Medical History: {patient_info['medical_history']}.\nDiagnosis: Please provide a comprehensive medical report based on the information provided."
 
 # Request Medical Report from GPT-3
 response = openai.Completion.create(
