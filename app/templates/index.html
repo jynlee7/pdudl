@@ -2,17 +2,44 @@
 <html>
 <head>
     <title>Medical Report Generator</title>
+    <link rel="stylesheet" href="..\static\style.css">
 </head>
 <body>
-    <h1>Medical Report Generator</h1>
-    <input type="file" id="imageInput">
-    <input type="text" id="ageInput" placeholder="Age">
-    <input type="text" id="genderInput" placeholder="Gender">
-    <input type="text" id="symptomsInput" placeholder="Symptoms">
-    <input type="text" id="historyInput" placeholder="Medical History">
-    <button id="generateButton">Generate Report</button>
-    <div id="report"></div>
-
+    <div class="container">
+        <header>
+            <h1>Medical Report Generator</h1>
+        </header>
+        
+        <main>
+            <section class="form-section">
+                <h2>Generate Medical Report</h2>
+                <form id="reportForm" enctype="multipart/form-data">
+                    <label for="image">Upload Chest X-ray Image:</label>
+                    <input type="file" id="imageInput" accept=".jpg, .jpeg, .png" required>
+                    <label for="age">Age:</label>
+                    <input type="text" id="ageInput" placeholder="Enter Age" required>
+                    <label for="gender">Gender:</label>
+                    <select id="genderInput" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <label for="symptoms">Symptoms:</label>
+                    <input type="text" id="symptomsInput" placeholder="Enter Symptoms" required>
+                    <!-- <textarea id="symptomsInput" placeholder="Enter Symptoms" rows="3" required></textarea> -->
+                    <label for="medical_history">Medical History:</label>
+                    <!-- <input type="text" id="symptomsInput" placeholder="Enter Medical History" required> -->
+                    <textarea id="historyInput" placeholder="Enter Medical History" rows="5" cols="54" required></textarea>
+                    <button type="button" id="generateButton">Generate Report</button>
+                </form>
+            </section>
+            
+            <section class="report-section">
+                <div id="report"></div>
+            </section>
+        </main>
+    </div>
+    
     <script>
         const generateButton = document.getElementById('generateButton');
         generateButton.addEventListener('click', async () => {

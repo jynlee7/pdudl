@@ -1,0 +1,68 @@
+/* Reset default margin and padding */
+body, h1, p, form {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set background color */
+body {
+    background-color: #f5f5e1; /* Creamy color */
+    font-family: Arial, sans-serif;
+}
+
+/* Header styling */
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    color: #333; /* Dark text color */
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    width: 80%;
+    max-width: 400px;
+    background-color: #fff; /* White background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+form input[type="file"], form input[type="text"], form button {
+    margin: 8px 0;
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #f5f5e1; /* Creamy color */
+    color: #333; /* Dark text color */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #ddd; /* Slightly lighter color on hover */
+}
+
+/* Report styling */
+.report {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Error styling */
+.error {
+    color: #d9534f; /* Bootstrap's danger color */
+    text-align: center;
+    margin: 10px 0;
+}
