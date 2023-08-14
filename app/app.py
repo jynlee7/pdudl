@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify
-from MedicalReportGenerator import MedicalReportGenerator
+from flask import Flask, request #, jsonify
+from medical_report import MedicalReportGenerator
 
 app = Flask(__name__)
 
