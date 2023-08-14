@@ -5,6 +5,7 @@ from PIL import Image
 from io import BytesIO
 import requests
 import openai
+import os
 
 # Load the trained Pneumonia Detection model (PneumoniaCNN)
 class PneumoniaCNN(nn.Module):
@@ -33,11 +34,14 @@ class MedicalReportGenerator:
         predicted_class = torch.argmax(probabilities, dim=1)
         return "Pneumonia Positive" if predicted_class.item() == 1 else "Pneumonia Negative"
 
-    def generate_medical_report(self, image_url, patient_info):
+    def generate_medical_report(self, image_source, patient_info):
         try:
-            # Load and preprocess the chest X-ray image
-            response = requests.get(image_url)
-            image = Image.open(BytesIO(response.content))
+            if os.path.exists(image_source):  # Local directory
+                image = Image.open(image_source)
+            else:  # Online source
+                response = requests.get(image_source)
+                image = Image.open(BytesIO(response.content))
+                
             input_image = self.preprocess_image(image)
 
             # Make a Pneumonia Prediction
@@ -71,7 +75,8 @@ gpt3_api_key = "YOUR_GPT_3_API_KEY"
 
 report_generator = MedicalReportGenerator(pneumonia_model_path, gpt3_api_key)
 
-image_url = "URL_TO_YOUR_CHEST_XRAY_IMAGE"
+# Example with a local image
+local_image_path = "path_to_local_image.jpg"
 patient_info = {
     "age": "35",
     "gender": "male",
@@ -79,6 +84,19 @@ patient_info = {
     "medical_history": "no significant medical history"
 }
 
-generated_report = report_generator.generate_medical_report(image_url, patient_info)
+generated_report = report_generator.generate_medical_report(local_image_path, patient_info)
+print("Generated Medical Report:")
+print(generated_report)
+
+# Example with an online image
+online_image_url = "URL_TO_ONLINE_IMAGE"
+patient_info = {
+    "age": "45",
+    "gender": "female",
+    "symptoms": "shortness of breath, chest pain",
+    "medical_history": "hypertension"
+}
+
+generated_report = report_generator.generate_medical_report(online_image_url, patient_info)
 print("Generated Medical Report:")
 print(generated_report)
