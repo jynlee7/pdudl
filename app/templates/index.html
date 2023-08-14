@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical Report Generator</title>
+</head>
+<body>
+    <h1>Medical Report Generator</h1>
+    <input type="file" id="imageInput">
+    <input type="text" id="ageInput" placeholder="Age">
+    <input type="text" id="genderInput" placeholder="Gender">
+    <input type="text" id="symptomsInput" placeholder="Symptoms">
+    <input type="text" id="historyInput" placeholder="Medical History">
+    <button id="generateButton">Generate Report</button>
+    <div id="report"></div>
+
+    <script>
+        const generateButton = document.getElementById('generateButton');
+        generateButton.addEventListener('click', async () => {
+            const imageInput = document.getElementById('imageInput');
+            const ageInput = document.getElementById('ageInput');
+            const genderInput = document.getElementById('genderInput');
+            const symptomsInput = document.getElementById('symptomsInput');
+            const historyInput = document.getElementById('historyInput');
+            const reportDiv = document.getElementById('report');
+            
+            const formData = new FormData();
+            formData.append('image', imageInput.files[0]);
+            formData.append('age', ageInput.value);
+            formData.append('gender', genderInput.value);
+            formData.append('symptoms', symptomsInput.value);
+            formData.append('medical_history', historyInput.value);
+            
+            const response = await fetch('/generate_report', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const report = await response.text();
+            reportDiv.innerHTML = `<h2>Generated Report:</h2><p>${report}</p>`;
+        });
+    </script>
+</body>
+</html>
